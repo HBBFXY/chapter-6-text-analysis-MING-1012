@@ -1,21 +1,47 @@
-def print_char_frequency(text):
-    # 统计字母频率（不区分大小写）
-    freq = {}
-    for char in text:
-        if char.isalpha():  # 只处理字母字符
-            char_lower = char.lower()
-            freq[char_lower] = freq.get(char_lower, 0) + 1
+# -*- coding: utf-8 -*-
+# 在此文件处编辑代码
+def analyze_text(text):
+    """
+    分析文本中字符频率并按频率降序排列
     
-    # 按频率降序排序，频率相同则按字母升序排序
-    sorted_chars = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+    参数:
+    text - 输入的字符串
     
-    # 提取排序后的字母
-    sorted_letters = [char for char, count in sorted_chars]
+    返回:
+    list - 按字符频率降序排列的字符列表
+    """
+    # 在此处增加代码
     
-    # 打印结果（每行一个字母）
-    for char in sorted_letters:
-        print(char)
 
-# 示例用法
-input_string = input("请输入字符串: ")
-print_char_frequency(input_string)
+# 主程序，已完整
+if __name__ == "__main__":
+    print("文本字符频率分析器")
+    print("====================")
+    print("请输入一段文本（输入空行结束）：")
+    
+    # 读取多行输入
+    lines = []
+    while True:
+        try:
+            line = input()
+            if line == "":
+                break
+            lines.append(line)
+        except EOFError:
+            break
+    
+    # 合并输入文本
+    text = "\n".join(lines)
+    
+    if not text.strip():
+        print("未输入有效文本！")
+    else:
+        # 分析文本
+        sorted_chars = analyze_text(text)
+        
+        # 打印结果
+        print("\n字符频率降序排列:")
+        print(", ".join(sorted_chars))
+        
+        # 提示用户比较不同语言
+        print("\n提示: 尝试输入中英文文章片段，比较不同语言之间字符频率的差别")
