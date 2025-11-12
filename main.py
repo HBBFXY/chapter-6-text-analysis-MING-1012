@@ -10,8 +10,30 @@ def analyze_text(text):
     返回:
     list - 按字符频率降序排列的字符列表
     """
-    # 在此处增加代码
+    # 创建字典统计字符频率
+    char_freq = {}
     
+    # 遍历文本中的每个字符
+    for char in text:
+        # 只统计字母字符（包括中文字符）
+        if char.isalpha():
+            # 将字符转换为小写以实现不区分大小写
+            char_lower = char.lower()
+            # 更新字符频率计数
+            if char_lower in char_freq:
+                char_freq[char_lower] += 1
+            else:
+                char_freq[char_lower] = 1
+    
+    # 按频率降序排序字符
+    # 使用sorted函数，按频率值（字典的值）排序，reverse=True表示降序
+    sorted_chars = sorted(char_freq.items(), key=lambda x: x[1], reverse=True)
+    
+    # 提取排序后的字符列表（只返回字符，不包含频率值）
+    result = [char for char, freq in sorted_chars]
+    
+    return result
+
 
 # 主程序，已完整
 if __name__ == "__main__":
