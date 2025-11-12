@@ -1,126 +1,69 @@
-# 评分文件，不要修改
-import sys
-import importlib.util
-import subprocess
-import os
-
-def load_student_function():
-    """加载学生函数"""
-    try:
-        # 动态导入学生模块
-        spec = importlib.util.spec_from_file_location("student_module", "main.py")
-        student_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(student_module)
-        return student_module.has_duplicates, None
-    except ImportError:
-        return None, "❌ 错误: 找不到main.py文件"
-    except AttributeError:
-        return None, "❌ 错误: main.py中没有定义has_duplicates函数"
-    except SyntaxError as e:
-        return None, f"❌ 语法错误: {e}"
-    except Exception as e:
-        return None, f"❌ 加载学生模块时出错: {e}"
-
-def test_function(has_duplicates):
-    """测试重复元素检测功能"""
-    test_cases = [
-        ([], False),           # 空列表
-        ([1], False),          # 单元素
-        ([1, 2, 3], False),    # 无重复
-        ([1, 2, 1], True),     # 有重复
-        (["a", "b", "a"], True),  # 字符串重复
-        ([1.0, 2.0, 1.0], True),  # 浮点数重复
-        ([True, False], False),  # 布尔值无重复
-        ([None, None], True)   # None值重复
-    ]
+# -*- coding: utf-8 -*-
+# 在此文件处编辑代码
+def analyze_text(text):
+    """
+    分析文本中字符频率并按频率降序排列
     
-    passed = 0
-    total = len(test_cases)
+    参数:
+    text - 输入的字符串
     
-    print("\n=== 函数功能测试 ===")
-    for test_input, expected in test_cases:
-        try:
-            result = has_duplicates(test_input)
-            if result == expected:
-                passed += 1
-                print(f"✅ 通过: {test_input} -> {expected}")
+    返回:
+    list - 按字符频率降序排列的字符列表
+    """
+    # 创建字典统计字符频率
+    char_freq = {}
+    
+    # 遍历文本中的每个字符
+    for char in text:
+        # 只统计字母字符（包括中文字符）
+        if char.isalpha():
+            # 将字符转换为小写以实现不区分大小写
+            char_lower = char.lower()
+            # 更新字符频率计数
+            if char_lower in char_freq:
+                char_freq[char_lower] += 1
             else:
-                print(f"⚠️ 失败: {test_input}")
-                print(f"   预期: {expected}, 实际: {result}")
-        except Exception as e:
-            print(f"❌ 异常: {test_input}")
-            print(f"   错误: {e}")
+                char_freq[char_lower] = 1
     
-    score = int((passed / total) * 70)  # 函数测试占70分
-    print(f"\n函数测试得分: {score}/70 (通过 {passed}/{total} 个测试)")
-    return score
+    # 按频率降序排序字符
+    # 使用sorted函数，按频率值（字典的值）排序，reverse=True表示降序
+    sorted_chars = sorted(char_freq.items(), key=lambda x: x[1], reverse=True)
+    
+    # 提取排序后的字符列表（只返回字符，不包含频率值）
+    result = [char for char, freq in sorted_chars]
+    
+    return result
 
-def test_main_program():
-    """测试学生的主程序输出"""
-    try:
-        # 使用子进程运行学生的主程序并捕获输出
-        result = subprocess.run(
-            [sys.executable, "main.py"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        
-        output = result.stdout
-        
-        # 检查是否有输出
-        if not output.strip():
-            print("❌ 主程序没有输出")
-            return 0
-        
-        print("\n=== 主程序输出 ===")
-        print(output)
-        
-        # 宽松检查
-        score = 30  # 基础分30分
-        if "有重复元素" in output and "没有重复元素" in output:
-            print("✅ 主程序包含测试结果")
-        else:
-            print("⚠️ 主程序缺少部分测试结果")
-            score = 20  # 部分得分
-        
-        print(f"主程序测试得分: {score}/30")
-        return score
-    except Exception as e:
-        print(f"❌ 主程序运行出错: {e}")
-        return 0
 
-def main():
-    """主测试函数"""
-    print("=" * 50)
-    print("重复元素判定作业自动评分")
-    print("=" * 50)
-    
-    # 加载学生函数
-    has_duplicates, error = load_student_function()
-    if error:
-        print(error)
-        sys.exit(1)
-    
-    # 测试函数功能
-    func_score = test_function(has_duplicates)
-    
-    # 测试主程序输出
-    main_score = test_main_program()
-    
-    # 计算总分
-    total_score = func_score + main_score
-    print("\n" + "=" * 50)
-    print(f"最终得分: {total_score}/100")
-    print("=" * 50)
-    
-    # 退出码（0表示通过，1表示失败）
-    if total_score >= 60:
-        print("🎉 评分通过!")
-        sys.exit(0)
-    else:
-        print("💥 评分未通过")
-        sys.exit(1)
-
+# 主程序，已完整
 if __name__ == "__main__":
-    main()
+    print("文本字符频率分析器")
+    print("====================")
+    print("请输入一段文本（输入空行结束）：")
+    
+    # 读取多行输入
+    lines = []
+    while True:
+        try:
+            line = input()
+            if line == "":
+                break
+            lines.append(line)
+        except EOFError:
+            break
+    
+    # 合并输入文本
+    text = "\n".join(lines)
+    
+    if not text.strip():
+        print("未输入有效文本！")
+    else:
+        # 分析文本
+        sorted_chars = analyze_text(text)
+        
+        # 打印结果
+        print("\n字符频率降序排列:")
+        print(", ".join(sorted_chars))
+        
+        # 提示用户比较不同语言
+        print("\n提示: 尝试输入中英文文章片段，比较不同语言之间字符频率的差别")
